@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MenuHolograms — Документация</title>
+  <meta name="description" content="Документация MenuHolograms: меню в мире на Display/Interaction, hover, хитбоксы, анимации, actions и взаимодействие элементов по id." />
+  <style>
+    :root{
+      --bg:#0b0f19;
+      --panel:#11182a;
+      --panel2:#0f1627;
+      --text:#e8eefc;
+      --muted:#a8b3cf;
+      --line:#223053;
+      --accent:#6aa6ff;
+      --accent2:#86ffcc;
+      --warn:#ffcf5a;
+      --bad:#ff6a6a;
+      --code:#0a1221;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(106,166,255,.25), transparent 60%),
+                  radial-gradient(1000px 600px at 90% 10%, rgba(134,255,204,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      min-height:100vh;
+    }
+    aside{
+      position:sticky;
+      top:0;
+      height:100vh;
+      padding:18px 14px;
+      border-right:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17,24,42,.92), rgba(15,22,39,.88));
+      backdrop-filter: blur(10px);
+      overflow:auto;
+    }
+    main{
+      padding:28px 22px 80px;
+      max-width: 1150px;
+    }
+    .brand{
+      border:1px solid var(--line);
+      background: rgba(17,24,42,.6);
+      border-radius: var(--radius);
+      padding:14px 14px 12px;
+      box-shadow: var(--shadow);
+      margin-bottom:14px;
+    }
+    .brand h1{
+      margin:0 0 6px;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-size:12px;
+      color:var(--muted);
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(10,18,33,.45);
+      color:var(--muted);
+    }
+    nav{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(10,18,33,.25);
+      padding:10px;
+    }
+    nav details{
+      border-radius:12px;
+      padding:6px 8px;
+    }
+    nav details[open]{background: rgba(17,24,42,.4)}
+    nav summary{
+      cursor:pointer;
+      color:var(--text);
+      font-weight:600;
+      list-style:none;
+    }
+    nav summary::-webkit-details-marker{display:none}
+    nav ul{margin:8px 0 0 16px;padding:0}
+    nav li{margin:6px 0;color:var(--muted);font-size:13px}
+    nav li a{color:var(--muted)}
+    nav li a:hover{color:var(--accent);text-decoration:none}
+
+    .content-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .hero{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(17,24,42,.55);
+      padding:18px 18px 14px;
+      box-shadow: var(--shadow);
+    }
+    .hero h2{margin:0 0 8px;font-size:24px}
+    .hero p{margin:0;color:var(--muted)}
+    .callouts{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+    .callout{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(10,18,33,.35);
+      padding:12px;
+    }
+    .callout b{color:var(--text)}
+    .callout p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    section{
+      margin-top:18px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(17,24,42,.35);
+      box-shadow: var(--shadow);
+    }
+    section h3{
+      margin:0 0 10px;
+      font-size:18px;
+    }
+    section h4{
+      margin:18px 0 8px;
+      font-size:15px;
+      color: var(--text);
+    }
+    .muted{color:var(--muted)}
+    .note, .warn, .danger{
+      border-radius:14px;
+      padding:12px 12px;
+      margin:10px 0;
+      border:1px solid var(--line);
+      background: rgba(10,18,33,.35);
+    }
+    .note{border-color: rgba(106,166,255,.35)}
+    .warn{border-color: rgba(255,207,90,.45)}
+    .danger{border-color: rgba(255,106,106,.45)}
+    .note b{color:var(--accent)}
+    .warn b{color:var(--warn)}
+    .danger b{color:var(--bad)}
+
+    pre{
+      margin:12px 0;
+      background: linear-gradient(180deg, rgba(10,18,33,.75), rgba(10,18,33,.55));
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      overflow:auto;
+    }
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:13px;
+      color: #dbe7ff;
+    }
+    .table-wrap{overflow:auto;border-radius:14px;border:1px solid var(--line);background: rgba(10,18,33,.28)}
+    table{
+      border-collapse:collapse;
+      width:100%;
+      min-width: 780px;
+    }
+    th,td{
+      border-bottom:1px solid var(--line);
+      padding:10px 10px;
+      vertical-align:top;
+      text-align:left;
+      font-size:13px;
+    }
+    th{
+      position:sticky;
+      top:0;
+      background: rgba(17,24,42,.85);
+      color: var(--text);
+      z-index:1;
+    }
+    td{color:var(--muted)}
+    td b{color:var(--text)}
+    .tag{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color: var(--muted);
+      background: rgba(17,24,42,.45);
+      font-size:12px;
+      margin-right:6px;
+      white-space:nowrap;
+    }
+    .grid2{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    figure{
+      margin:10px 0 0;
+      border:1px dashed rgba(168,179,207,.35);
+      border-radius:14px;
+      padding:12px;
+      background: rgba(10,18,33,.2);
+    }
+    figure img{
+      width:100%;
+      height:auto;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(34,48,83,.7);
+      background: rgba(17,24,42,.25);
+    }
+    figcaption{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .kbd{
+      display:inline-block;
+      padding:1px 6px;
+      border-radius:6px;
+      border:1px solid var(--line);
+      background: rgba(10,18,33,.55);
+      font-family: ui-monospace, monospace;
+      font-size:12px;
+      color: var(--text);
+    }
+    .footer{
+      margin-top:22px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr}
+      aside{position:relative;height:auto}
+      main{padding:18px 12px 60px}
+      .callouts{grid-template-columns:1fr}
+      .grid2{grid-template-columns:1fr}
+      table{min-width: 680px}
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <aside>
+    <div class="brand">
+      <h1>MenuHolograms</h1>
+      <p>Документация для пользователей и админов сервера: меню в мире, hover, хитбоксы, анимации и actions.</p>
+      <div class="badge">
+        <span class="chip">Display entities</span>
+        <span class="chip">Interaction hitboxes</span>
+        <span class="chip">Animations</span>
+        <span class="chip">Element IDs</span>
+      </div>
+    </div>
+
+    <nav>
+      <details open>
+        <summary>Начало</summary>
+        <ul>
+          <li><a href="#what-is">Что это</a></li>
+          <li><a href="#requirements">Требования</a></li>
+          <li><a href="#install">Установка</a></li>
+          <li><a href="#folders">Структура папок</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Конфиг</summary>
+        <ul>
+          <li><a href="#config-overview">Обзор config.yml</a></li>
+          <li><a href="#config-params">Параметры config.yml</a></li>
+          <li><a href="#colors">Цвета / градиенты</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Меню (menus/*.yml)</summary>
+        <ul>
+          <li><a href="#menu-file">Файл меню</a></li>
+          <li><a href="#menu-anchor">anchor</a></li>
+          <li><a href="#menu-teleport">teleport</a></li>
+          <li><a href="#menu-close">auto-close</a></li>
+          <li><a href="#menu-elements">elements</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Элементы</summary>
+        <ul>
+          <li><a href="#element-types">Типы</a></li>
+          <li><a href="#element-params">Параметры элемента</a></li>
+          <li><a href="#element-rotation">rotation</a></li>
+          <li><a href="#hitbox-primary">hitbox</a></li>
+          <li><a href="#hitbox-extra">extra_hitboxes + id</a></li>
+          <li><a href="#hover">hover</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Действия (actions)</summary>
+        <ul>
+          <li><a href="#actions-overview">Как работают actions</a></li>
+          <li><a href="#actions-list">Список actions</a></li>
+          <li><a href="#actions-element">element: управление по id</a></li>
+          <li><a href="#actions-examples">Примеры</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Анимации (animations/*)</summary>
+        <ul>
+          <li><a href="#animations-overview">Обзор</a></li>
+          <li><a href="#animations-file">Формат файла</a></li>
+          <li><a href="#animations-bind">Привязка к элементам</a></li>
+          <li><a href="#animations-control">Управление</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Технические детали</summary>
+        <ul>
+          <li><a href="#hover-raytrace">Hover и rayTraceEntities</a></li>
+          <li><a href="#pitch-fix">Поворот при pitch ±90</a></li>
+          <li><a href="#visibility">Видимость для других игроков</a></li>
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+        </ul>
+      </details>
+    </nav>
+
+    <div class="footer">
+      <div>GitHub Pages: положи файл как <span class="kbd">docs/index.html</span> и включи Pages для ветки main → /docs.</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="content-header">
+      <div class="hero" style="flex:1">
+        <h2 id="what-is">MenuHolograms — меню в мире</h2>
+        <p>
+          Плагин создаёт “менюшки” прямо в мире Minecraft: текст, предметы, блоки и “картинки” (через resourcepack).
+          Взаимодействие выполняется через <b>кликабельные хитбоксы (Interaction)</b>: поддерживаются <b>hover</b>,
+          клики ЛКМ/ПКМ, анимации и управление элементами по <b>id</b>.
+        </p>
+
+        <div class="callouts">
+          <div class="callout">
+            <b>Hover = луч по хитбоксам</b>
+            <p>Наведение считается по Interaction-энтити, а не по “визуалу”. Если нужно — расширяй hitbox/extra_hitboxes.</p>
+          </div>
+          <div class="callout">
+            <b>Настройки меню — в MenuDefinition</b>
+            <p>Важные настройки можно задавать в <span class="kbd">menus/*.yml</span> и они перекрывают <span class="kbd">config.yml</span>.</p>
+          </div>
+          <div class="callout">
+            <b>Анимации — отдельные файлы</b>
+            <p>Папка <span class="kbd">animations/</span>, форматы: TEXT/BLOCK/IMAGE, режимы: single/repeat/lastframe.</p>
+          </div>
+          <div class="callout">
+            <b>Element IDs</b>
+            <p>Каждому элементу можно дать <span class="kbd">id</span> и управлять им через action <span class="kbd">element:</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="requirements">
+      <h3>Требования</h3>
+      <ul class="muted">
+        <li><b>Minecraft</b>: версии, где доступны <b>Display</b> и <b>Interaction</b> сущности (как правило, 1.19.4+).</li>
+        <li><b>Сервер</b>: Paper/Spigot совместимый сервер (рекомендуется Paper).</li>
+        <li><b>Resourcepack</b>: нужен только если используешь элементы <span class="kbd">IMAGE</span>.</li>
+      </ul>
+      <div class="note"><b>Совет:</b> если что-то “не кликается” или “hover не ловится”, почти всегда причина в размерах/позиции хитбокса или в расстоянии.</div>
+    </section>
+
+    <section id="install">
+      <h3>Установка</h3>
+      <ol class="muted">
+        <li>Скопируй <span class="kbd">Menuholograms.jar</span> в папку <span class="kbd">plugins/</span>.</li>
+        <li>Запусти сервер: плагин создаст папки <span class="kbd">menus/</span>, <span class="kbd">animations/</span> и т.д.</li>
+        <li>Создай меню-файл (например <span class="kbd">plugins/Menuholograms/menus/main.yml</span>).</li>
+        <li>Перезапусти или сделай reload командой плагина (если есть).</li>
+      </ol>
+
+      <figure>
+        <img src="assets/screenshots/screenshot1_создание_меню.png" alt="Создание меню" />
+        <figcaption>screenshot1_создание_меню.png — создаём файл <span class="kbd">menus/main.yml</span></figcaption>
+      </figure>
+    </section>
+
+    <section id="folders">
+      <h3>Структура папок</h3>
+      <pre><code>plugins/Menuholograms/
+  config.yml
+  menus/
+    main.yml
+    shop.yml
+  animations/
+    logo_anim.yml
+    welcome_text.yml
+  images/
+    (опционально — исходники/ассеты)
+  resourcepack/
+    (выход/сборка — зависит от ResourcePackService)</code></pre>
+      <div class="note"><b>Важно:</b> все файлы меню и анимаций — обычные <span class="kbd">.yml</span>. Имя меню/анимации берётся из имени файла.</div>
+    </section>
+
+    <section id="config-overview">
+      <h3>config.yml — обзор</h3>
+      <p class="muted">
+        <span class="kbd">config.yml</span> хранит глобальные значения по умолчанию:
+        префикс, поведение динамического anchor (teleport), авто-закрытие, ресурс-пак.
+        Любые параметры, заданные в <span class="kbd">menus/*.yml</span>, <b>перекрывают config.yml</b> (через MenuDefinition).
+      </p>
+      <pre><code class="language-yaml"># пример (структура может отличаться)
+prefix: "&7[MH]&f"
+
+teleport:
+  player_distance: 2.0
+  looping: false
+  loop_tick: 1
+  chase_player: false
+  tp_tick_duration: 1
+
+close_distance: 32.0
+close_time: "-1"
+
+resourcepack:
+  enabled: false</code></pre>
+    </section>
+
+    <section id="config-params">
+      <h3>config.yml — параметры (каждый параметр + как работает)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Параметр</th>
+              <th>Тип</th>
+              <th>Значение по умолчанию</th>
+              <th>Что делает (как работает)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>prefix</b></td>
+              <td>string</td>
+              <td><span class="kbd">§7[MH]</span> + пробел</td>
+              <td>Префикс для сообщений плагина. Применяется <b>через color()</b> (поддержка &amp;, HEX, gradient).</td>
+            </tr>
+
+            <tr>
+              <td><b>teleport.player_distance</b></td>
+              <td>double</td>
+              <td>2.0</td>
+              <td>
+                Дистанция от игрока до динамического меню по направлению yaw (по горизонтали).  
+                Если в меню <b>нет anchor</b>, меню появляется “перед игроком”.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>teleport.looping</b></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>
+                Если true — меню будет обновлять anchor по таймеру и “двигаться” вместе с игроком/камерой
+                (в зависимости от chase_player).
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>teleport.loop_tick</b></td>
+              <td>int</td>
+              <td>1</td>
+              <td>Как часто пересчитывать anchor (в тиках). 1 = каждый тик, 20 = раз в секунду.</td>
+            </tr>
+
+            <tr>
+              <td><b>teleport.chase_player</b></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>
+                Если true — меню будет следовать за <b>поворотом камеры (yaw)</b>.  
+                Если false — направление фиксируется при открытии (меню остаётся в одной “стороне” от игрока).
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>teleport.tp_tick_duration</b></td>
+              <td>int</td>
+              <td>1</td>
+              <td>
+                Интерполяция телепорта Display-энтити (сколько тиков “плавно доезжает” до новой позиции).
+                0 = мгновенно.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>close_distance</b></td>
+              <td>double</td>
+              <td>32.0</td>
+              <td>
+                Дистанция авто-закрытия, <b>если close_time = -1</b>.  
+                Проверяется как distanceSquared до anchor.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>close_time</b></td>
+              <td>string</td>
+              <td>-1</td>
+              <td>
+                Таймер авто-закрытия после последнего взаимодействия.  
+                Формат: <span class="kbd">"-1"</span> (выкл), <span class="kbd">"10s"</span>, <span class="kbd">"500ms"</span>,
+                <span class="kbd">"1m"</span>, <span class="kbd">"1h"</span> или просто число (секунды).
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>resourcepack.enabled</b></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>
+                Если true — запускается сервис сборки/раздачи ресурс-пака (ResourcePackService).  
+                Нужен для <span class="kbd">IMAGE</span> и кастомных моделей.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note"><b>Перекрытие:</b> многие параметры можно переопределить в конкретном меню (см. teleport/close в menu.yml).</div>
+    </section>
+
+    <section id="colors">
+      <h3>Цвета / градиенты</h3>
+      <p class="muted">
+        Плагин использует метод <b>Menuholograms.color()</b> для форматирования строк:
+      </p>
+      <ul class="muted">
+        <li><span class="kbd">&amp;a</span> и стандартные коды цветов Minecraft.</li>
+        <li>HEX: <span class="kbd">#RRGGBB</span> или <span class="kbd">&amp;#RRGGBB</span>.</li>
+        <li>Градиент: <span class="kbd">&lt;gradient:#FF0000:#00FF00&gt;Текст&lt;/gradient&gt;</span>.</li>
+      </ul>
+
+      <div class="note">
+        <b>Удаление цветов:</b> для расчёта авто-хитбокса у TEXT используется “инвертированный” метод
+        (часто называют <b>uncolor/strip</b>) — он убирает все секции <span class="kbd">§x</span>/<span class="kbd">§a</span> и т.п.,
+        чтобы длина текста считалась правильно.
+      </div>
+
+      <pre><code>message: "&lt;gradient:#FF0000:#00FF00&gt;Hello&lt;/gradient&gt; &amp;7world #33CCFF!"</code></pre>
+    </section>
+
+    <section id="menu-file">
+      <h3>menus/*.yml — формат файла меню</h3>
+      <p class="muted">
+        Меню — это yml файл в папке <span class="kbd">plugins/Menuholograms/menus</span>.
+        Имя меню = имя файла без <span class="kbd">.yml</span>.
+      </p>
+
+      <pre><code class="language-yaml"># plugins/Menuholograms/menus/main.yml
+
+# (опционально) фиксированная точка спавна меню
+anchor:
+  world: world
+  x: 0
+  y: 100
+  z: 0
+
+# (опционально) переопределение teleport из config.yml
+teleport:
+  player_distance: 2.0
+  looping: true
+  loop_tick: 1
+  chase_player: true
+  tp_tick_duration: 1
+
+# (опционально) переопределение авто-закрытия
+close_distance: 32.0
+close_time: "10s"
+
+# элементы
+elements:
+  - id: title
+    type: TEXT
+    x: 0
+    y: 0.7
+    z: 0
+    text: "&amp;bMenuHolograms"
+
+  - id: play
+    type: TEXT
+    x: 0
+    y: 0.4
+    z: 0
+    text: "&amp;aИграть"
+    left:
+      - "sound: UI_BUTTON_CLICK 1 1"
+      - "command: warp spawn"</code></pre>
+
+      <figure>
+        <img src="assets/screenshots/screenshot2_элементы_и_позиции.png" alt="Элементы и позиции" />
+        <figcaption>screenshot2_элементы_и_позиции.png — расставляем элементы по x/y/z относительно anchor</figcaption>
+      </figure>
+    </section>
+
+    <section id="menu-anchor">
+      <h3>anchor</h3>
+      <p class="muted">
+        <b>anchor</b> определяет, где меню находится в мире.
+      </p>
+
+      <div class="grid2">
+        <div class="note">
+          <b>Если anchor задан</b><br/>
+          Меню всегда спавнится на указанной точке мира. Не “следует” за игроком.
+        </div>
+        <div class="note">
+          <b>Если anchor НЕ задан</b><br/>
+          Меню спавнится относительно игрока:
+          <ul class="muted">
+            <li>по горизонтали — на <span class="kbd">player_distance</span> по yaw</li>
+            <li>по высоте — <b>Y игрока + 1</b></li>
+            <li>может обновляться по таймеру (looping)</li>
+          </ul>
+        </div>
+      </div>
+
+      <pre><code class="language-yaml">anchor:
+  world: world
+  x: 10.5
+  y: 64
+  z: -20.5</code></pre>
+    </section>
+
+    <section id="menu-teleport">
+      <h3>teleport (настройки динамического anchor)</h3>
+      <p class="muted">
+        Эти параметры можно задавать в <span class="kbd">menu.yml</span>.
+        Если параметр не указан — берётся значение из <span class="kbd">config.yml</span>.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Параметр</th>
+              <th>Тип</th>
+              <th>Где действует</th>
+              <th>Как работает</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>teleport.player_distance</b></td>
+              <td>double</td>
+              <td>только если anchor отсутствует</td>
+              <td>Смещение меню от игрока по направлению yaw (только XZ). При открытии вычисляется “вперёд”.</td>
+            </tr>
+            <tr>
+              <td><b>teleport.looping</b></td>
+              <td>boolean</td>
+              <td>только если anchor отсутствует</td>
+              <td>Если true — anchor пересчитывается каждые loop_tick тиков.</td>
+            </tr>
+            <tr>
+              <td><b>teleport.loop_tick</b></td>
+              <td>int</td>
+              <td>только при looping=true</td>
+              <td>Частота пересчёта anchor. Чем больше — тем “реже” меню обновляет положение.</td>
+            </tr>
+            <tr>
+              <td><b>teleport.chase_player</b></td>
+              <td>boolean</td>
+              <td>только при looping=true</td>
+              <td>
+                true — направление (XZ) пересчитывается по yaw камеры.  
+                false — направление фиксируется в момент открытия меню.
+              </td>
+            </tr>
+            <tr>
+              <td><b>teleport.tp_tick_duration</b></td>
+              <td>int</td>
+              <td>всегда (для Display)</td>
+              <td>Плавность перемещения Display при teleport() (interpolation duration в тиках).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <pre><code class="language-yaml">teleport:
+  player_distance: 2.0
+  looping: true
+  loop_tick: 2
+  chase_player: true
+  tp_tick_duration: 1</code></pre>
+    </section>
+
+    <section id="menu-close">
+      <h3>Авто-закрытие (close_time / close_distance)</h3>
+      <p class="muted">
+        Логика закрытия:
+      </p>
+      <ul class="muted">
+        <li>Если <span class="kbd">close_time</span> задан и не равен <span class="kbd">-1</span> — меню закроется через указанное время после последнего взаимодействия.</li>
+        <li>Иначе — меню закрывается по дистанции <span class="kbd">close_distance</span> от anchor.</li>
+      </ul>
+
+      <pre><code class="language-yaml"># закрыть через 15 секунд после последнего клика/hover
+close_time: "15s"
+
+# закрывать по расстоянию, таймер выключен
+close_time: "-1"
+close_distance: 24.0</code></pre>
+    </section>
+
+    <section id="menu-elements">
+      <h3>elements — элементы меню</h3>
+      <p class="muted">
+        Элементы — это список объектов. Каждый элемент может быть кликабельным и иметь hover.
+        Рекомендуется всегда задавать <b>id</b>, чтобы потом управлять элементом через actions.
+      </p>
+
+      <figure>
+        <img src="assets/screenshots/screenshot3_hover_эффекты.png" alt="Hover эффекты" />
+        <figcaption>screenshot3_hover_эффекты.png — пример hover: glow + scale + смена текста</figcaption>
+      </figure>
+    </section>
+
+    <section id="element-types">
+      <h3>Типы элементов</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>type</th>
+              <th>Сущность</th>
+              <th>content поле</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>TEXT</b></td>
+              <td>TextDisplay</td>
+              <td><span class="kbd">text</span></td>
+              <td>Текст поддерживает цвета/градиенты через <span class="kbd">Menuholograms.color()</span>.</td>
+            </tr>
+            <tr>
+              <td><b>ITEM</b></td>
+              <td>ItemDisplay</td>
+              <td><span class="kbd">material</span></td>
+              <td>Отображает обычный предмет Minecraft.</td>
+            </tr>
+            <tr>
+              <td><b>BLOCK</b></td>
+              <td>BlockDisplay</td>
+              <td><span class="kbd">material</span></td>
+              <td>Отображает блок (BlockData создаётся из Material).</td>
+            </tr>
+            <tr>
+              <td><b>IMAGE</b></td>
+              <td>ItemDisplay (PAPER)</td>
+              <td><span class="kbd">image</span></td>
+              <td>
+                “Картинка” — это PAPER с item model: <span class="kbd">menuholograms:&lt;imageId&gt;</span>.<br/>
+                Требует ресурс-пак с нужными моделями.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="element-params">
+      <h3>Параметры элемента (полный разбор)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Параметр</th>
+              <th>Тип</th>
+              <th>Обязателен</th>
+              <th>Как работает</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>id</b></td>
+              <td>string</td>
+              <td>нет, но <b>рекомендуется</b></td>
+              <td>
+                Идентификатор элемента. Используется в action <span class="kbd">element:</span> для управления другими элементами.  
+                Если не задан — плагин присвоит авто-id (например <span class="kbd">e0</span>, <span class="kbd">e1</span>), но на него неудобно ссылаться.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>type</b></td>
+              <td>enum</td>
+              <td>да</td>
+              <td>Тип элемента: TEXT / ITEM / BLOCK / IMAGE.</td>
+            </tr>
+
+            <tr>
+              <td><b>x, y, z</b></td>
+              <td>double</td>
+              <td>да</td>
+              <td>
+                Позиция относительно anchor.  
+                Дополнительно: меню разворачивается лицом к игроку, поэтому x/z “поворотятся” вместе с меню.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>scale</b></td>
+              <td>double</td>
+              <td>нет</td>
+              <td>Масштаб Display. Влияет на авто-хитбокс (если hitbox не задан вручную).</td>
+            </tr>
+
+            <tr>
+              <td><b>rotation</b></td>
+              <td>number или object</td>
+              <td>нет</td>
+              <td>
+                Локальный поворот элемента (не путать с поворотом меню к игроку!).  
+                Применяется через Transformation (Quaternion) к Display.
+              </td>
+            </tr>
+
+            <tr>
+              <td><b>text</b></td>
+              <td>string</td>
+              <td>только для TEXT</td>
+              <td>Текст (поддержка цветов/градиентов). Можно многострочно через <span class="kbd">\n</span>.</td>
+            </tr>
+
+            <tr>
+              <td><b>material</b></td>
+              <td>string</td>
+              <td>только ITEM/BLOCK</td>
+              <td>Material по имени (например <span class="kbd">DIAMOND</span>, <span class="kbd">GOLD_BLOCK</span>).</td>
+            </tr>
+
+            <tr>
+              <td><b>image</b></td>
+              <td>string</td>
+              <td>только IMAGE</td>
+              <td>item model id. В ресурс-паке это соответствует <span class="kbd">menuholograms:&lt;imageId&gt;</span>.</td>
+            </tr>
+
+            <tr>
+              <td><b>animation</b></td>
+              <td>string</td>
+              <td>нет</td>
+              <td>Имя файла анимации из папки <span class="kbd">animations/</span> без расширения.</td>
+            </tr>
+
+            <tr>
+              <td><b>animation_autostart</b></td>
+              <td>boolean</td>
+              <td>нет</td>
+              <td>Запускать анимацию при открытии меню. Если не задан — считается true.</td>
+            </tr>
+
+            <tr>
+              <td><b>hitbox</b></td>
+              <td>object</td>
+              <td>нет</td>
+              <td>Основной Interaction-хитбокс (ширина/высота/смещение). Если не указан — авто.</td>
+            </tr>
+
+            <tr>
+              <td><b>extra_hitboxes</b></td>
+              <td>list</td>
+              <td>нет</td>
+              <td>Дополнительные Interaction-хитбоксы с id и локальными смещениями.</td>
+            </tr>
+
+            <tr>
+              <td><b>left</b></td>
+              <td>list&lt;string&gt;</td>
+              <td>нет</td>
+              <td>Actions при ЛКМ по элементу или по его хитбоксам.</td>
+            </tr>
+
+            <tr>
+              <td><b>right</b></td>
+              <td>list&lt;string&gt;</td>
+              <td>нет</td>
+              <td>Actions при ПКМ по элементу или по его хитбоксам.</td>
+            </tr>
+
+            <tr>
+              <td><b>hover</b></td>
+              <td>object</td>
+              <td>нет</td>
+              <td>Настройки визуала/хитбоксов/анимаций при наведении.</td>
+            </tr>
+
+            <tr>
+              <td><b>onHover</b></td>
+              <td>list&lt;string&gt;</td>
+              <td>нет</td>
+              <td>Actions при входе hover (курсор попал в хитбокс).</td>
+            </tr>
+
+            <tr>
+              <td><b>onUnhover</b></td>
+              <td>list&lt;string&gt;</td>
+              <td>нет</td>
+              <td>Actions при выходе hover.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="element-rotation">
+      <h3>rotation — как работает поворот</h3>
+      <p class="muted">
+        Есть <b>2 разных поворота</b>:
+      </p>
+      <ul class="muted">
+        <li><b>Поворот меню к игроку</b> — каждый тик вычисляется yaw до игрока и применяется к entity rotation (yaw).</li>
+        <li><b>rotation элемента</b> — локальный поворот Display через Transformation (yaw/pitch), добавляется к базовому трансформу.</li>
+      </ul>
+
+      <div class="note">
+        <b>Практически:</b> rotation полезен, чтобы “наклонить” картинку или повернуть предмет, не ломая общий поворот меню.
+      </div>
+
+      <pre><code class="language-yaml"># коротко: только yaw
+rotation: 45
+
+# полно:
+rotation:
+  yaw: 20
+  pitch: -10</code></pre>
+    </section>
+
+    <section id="hitbox-primary">
+      <h3>hitbox — основной хитбокс</h3>
+      <p class="muted">
+        Основной хитбокс — это сущность <b>Interaction</b>:
+        её “ширина/высота” определяет область, куда должен попасть rayTrace для hover и клика.
+      </p>
+
+      <pre><code class="language-yaml">hitbox:
+  width: 1.2
+  height: 0.6
+  yOffset: 0.0</code></pre>
+
+      <div class="note">
+        <b>Если hitbox не задан:</b> плагин пытается подобрать размеры автоматически:
+        <ul class="muted">
+          <li>TEXT — по длине строк (без цветов) и количеству строк</li>
+          <li>ITEM — ~0.75 * scale</li>
+          <li>BLOCK/IMAGE — ~1.0 * scale</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="hitbox-extra">
+      <h3>extra_hitboxes — дополнительные хитбоксы с id</h3>
+      <p class="muted">
+        Дополнительные хитбоксы нужны, когда:
+      </p>
+      <ul class="muted">
+        <li>у элемента сложная форма и один hitbox не подходит</li>
+        <li>надо расширить область hover/клика</li>
+        <li>надо делать “несколько зон” клика на одном объекте (но логика клика всё равно общая: left/right этого элемента)</li>
+      </ul>
+
+      <pre><code class="language-yaml">extra_hitboxes:
+  - id: leftZone
+    x: -0.5
+    y: 0.0
+    z: 0.0
+    width: 0.7
+    height: 0.7
+
+  - id: rightZone
+    x: 0.5
+    y: 0.0
+    z: 0.0
+    width: 0.7
+    height: 0.7</code></pre>
+
+      <figure>
+        <img src="assets/screenshots/screenshot4_extra_hitboxes.png" alt="Extra hitboxes" />
+        <figcaption>screenshot4_extra_hitboxes.png — несколько хитбоксов у одного элемента</figcaption>
+      </figure>
+
+      <h4>Изменение/удаление extra hitboxes на hover</h4>
+      <p class="muted">
+        В <span class="kbd">hover.extra_hitboxes</span> можно:
+        <span class="tag">удалить</span> существующий по id,
+        <span class="tag">изменить</span> параметры,
+        <span class="tag">добавить</span> новый.
+      </p>
+
+      <pre><code class="language-yaml">hover:
+  extra_hitboxes:
+    - id: leftZone
+      remove: true     # убрать при наведении
+
+    - id: newZone      # добавить при наведении
+      x: 0
+      y: 0
+      z: 0.3
+      width: 1.4
+      height: 0.25</code></pre>
+
+      <div class="warn">
+        <b>Важно:</b> hover считается по хитбоксам. Если “hover не ловится” — увеличь width/height или добавь extra_hitboxes ближе к визуалу.
+      </div>
+    </section>
+
+    <section id="hover">
+      <h3>hover — настройки при наведении</h3>
+      <p class="muted">
+        Hover срабатывает, когда луч игрока попадает в любой hitbox элемента (primary или extra).
+        При входе hover: применяется визуал, меняются хитбоксы и выполняются actions.
+      </p>
+
+      <pre><code class="language-yaml">hover:
+  glow: true
+  scale: 1.1
+
+  rotation:
+    yaw: 10
+    pitch: 0
+
+  text: "&amp;eНавёлся!"
+  material: DIAMOND_BLOCK
+  image: "logo_hover"
+
+  hitbox:
+    width: 2.0
+    height: 0.6
+    yOffset: 0.0
+
+  animation_action: pause</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Параметр hover</th>
+              <th>Тип</th>
+              <th>Как работает</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>hover.glow</b></td>
+              <td>boolean</td>
+              <td>Включает glowing у Display при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.scale</b></td>
+              <td>double</td>
+              <td>Домножает базовый scale элемента при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.rotation</b></td>
+              <td>number или object</td>
+              <td>Добавляется к базовой rotation через Transformation.</td>
+            </tr>
+            <tr>
+              <td><b>hover.text</b></td>
+              <td>string</td>
+              <td>Для TEXT: заменяет текст при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.material</b></td>
+              <td>Material</td>
+              <td>Для ITEM/BLOCK: меняет предмет/блок при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.image</b></td>
+              <td>string</td>
+              <td>Для IMAGE: меняет imageId (item model) при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.hitbox</b></td>
+              <td>object</td>
+              <td>Изменяет размеры primary hitbox при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.extra_hitboxes</b></td>
+              <td>list</td>
+              <td>Изменяет/добавляет/удаляет extra_hitboxes при наведении.</td>
+            </tr>
+            <tr>
+              <td><b>hover.animation_action</b></td>
+              <td>string</td>
+              <td>Управляет анимацией элемента при наведении (см. раздел “Анимации → Управление”).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="actions-overview">
+      <h3>Actions — как работают</h3>
+      <p class="muted">
+        Actions — это строки в списках <span class="kbd">left</span>, <span class="kbd">right</span>,
+        <span class="kbd">onHover</span>, <span class="kbd">onUnhover</span>.
+      </p>
+
+      <div class="note">
+        <b>Замена плейсхолдеров:</b> поддерживается <span class="kbd">%player%</span> → ник игрока.
+      </div>
+
+      <pre><code class="language-yaml">left:
+  - "sound: UI_BUTTON_CLICK 1 1"
+  - "message: &amp;aПривет, %player%!"
+  - "command: warp spawn"</code></pre>
+    </section>
+
+    <section id="actions-list">
+      <h3>Actions — полный список</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Формат</th>
+              <th>Что делает</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>sound</b></td>
+              <td><span class="kbd">sound: &lt;SOUND&gt; [vol] [pitch]</span></td>
+              <td>Проигрывает звук игроку. Пример: <span class="kbd">sound: UI_BUTTON_CLICK 1 1</span>.</td>
+            </tr>
+            <tr>
+              <td><b>message</b></td>
+              <td><span class="kbd">message: &lt;text&gt;</span></td>
+              <td>Отправляет сообщение игроку (через prefix). Текст проходит через <b>color()</b>.</td>
+            </tr>
+            <tr>
+              <td><b>command</b></td>
+              <td><span class="kbd">command: &lt;cmd&gt;</span></td>
+              <td>Выполняет команду от имени игрока.</td>
+            </tr>
+            <tr>
+              <td><b>console</b></td>
+              <td><span class="kbd">console: &lt;cmd&gt;</span></td>
+              <td>Выполняет команду от консоли.</td>
+            </tr>
+            <tr>
+              <td><b>open</b></td>
+              <td><span class="kbd">open: &lt;menu&gt;</span></td>
+              <td>Открывает другое меню.</td>
+            </tr>
+            <tr>
+              <td><b>close</b></td>
+              <td><span class="kbd">close</span></td>
+              <td>Закрывает текущее меню.</td>
+            </tr>
+            <tr>
+              <td><b>element</b></td>
+              <td><span class="kbd">element: &lt;id&gt; &lt;cmd&gt; [args...]</span></td>
+              <td>Управление другим элементом по id (анимации/контент/trigger). См. следующий раздел.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="actions-element">
+      <h3>element: — управление элементами по id (самое важное)</h3>
+      <p class="muted">
+        Команда вида:
+      </p>
+      <pre><code>element: &lt;elementId&gt; &lt;command&gt; &lt;args...&gt;</code></pre>
+
+      <h4>Команды element:</h4>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Пример</th>
+              <th>Что делает</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>anim</b></td>
+              <td><span class="kbd">element: logo anim pause</span></td>
+              <td>Управление анимацией элемента (pause/resume/stop/stop_forever/start/restart).</td>
+            </tr>
+            <tr>
+              <td><b>text</b></td>
+              <td><span class="kbd">element: title text &amp;aНовый текст</span></td>
+              <td>Меняет базовый текст у TEXT (применяет color()).</td>
+            </tr>
+            <tr>
+              <td><b>image</b></td>
+              <td><span class="kbd">element: logo image logo_2</span></td>
+              <td>Меняет базовую картинку у IMAGE (item model id).</td>
+            </tr>
+            <tr>
+              <td><b>material</b></td>
+              <td><span class="kbd">element: cube material GOLD_BLOCK</span></td>
+              <td>Меняет material у ITEM или BLOCK.</td>
+            </tr>
+            <tr>
+              <td><b>reset</b></td>
+              <td><span class="kbd">element: logo reset</span></td>
+              <td>Сбрасывает элемент к исходным значениям из menu.yml (base/original).</td>
+            </tr>
+            <tr>
+              <td><b>trigger</b></td>
+              <td><span class="kbd">element: btn trigger left</span></td>
+              <td>Запускает actions другого элемента (left/right/onHover/onUnhover).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure>
+        <img src="assets/screenshots/screenshot6_element_actions.png" alt="Element actions" />
+        <figcaption>screenshot6_element_actions.png — один элемент управляет другим по <span class="kbd">id</span></figcaption>
+      </figure>
+    </section>
+
+    <section id="actions-examples">
+      <h3>Примеры actions (готовые рецепты)</h3>
+
+      <h4>1) Кнопка останавливает анимацию у другого элемента</h4>
+      <pre><code class="language-yaml">- id: logo
+  type: IMAGE
+  x: 0
+  y: 1
+  z: 0
+  image: "logo_1"
+  animation: "logo_anim"
+
+- id: stopBtn
+  type: TEXT
+  x: 0
+  y: 0.4
+  z: 0
+  text: "&amp;cSTOP"
+  left:
+    - "element: logo anim stop_forever"
+
+- id: startBtn
+  type: TEXT
+  x: 0
+  y: 0.2
+  z: 0
+  text: "&amp;aSTART"
+  left:
+    - "element: logo anim restart"</code></pre>
+
+      <h4>2) Наведение на кнопку ставит лого на паузу</h4>
+      <pre><code class="language-yaml">- id: play
+  type: TEXT
+  x: 0
+  y: 0.2
+  z: 0
+  text: "&amp;aPlay"
+  onHover:
+    - "element: logo anim pause"
+  onUnhover:
+    - "element: logo anim resume"</code></pre>
+
+      <h4>3) “Событие” через trigger</h4>
+      <pre><code class="language-yaml">- id: button
+  type: TEXT
+  text: "&amp;eDo it"
+  left:
+    - "element: target trigger left"
+
+- id: target
+  type: TEXT
+  text: "&amp;7Target"
+  left:
+    - "message: &amp;aTarget LEFT triggered!"</code></pre>
+    </section>
+
+    <section id="animations-overview">
+      <h3>Анимации — обзор</h3>
+      <p class="muted">
+        Анимации лежат в <span class="kbd">plugins/Menuholograms/animations</span>.
+        Любой файл <span class="kbd">.yml</span> считается анимацией.
+        Имя анимации = имя файла без расширения.
+      </p>
+
+      <figure>
+        <img src="assets/screenshots/screenshot5_animations_папка.png" alt="Animations folder" />
+        <figcaption>screenshot5_animations_папка.png — файлы анимаций в папке <span class="kbd">animations/</span></figcaption>
+      </figure>
+    </section>
+
+    <section id="animations-file">
+      <h3>Формат файла анимации (каждый параметр)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Параметр</th>
+              <th>Тип</th>
+              <th>Как работает</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>mode</b></td>
+              <td>single / repeat / lastframe</td>
+              <td>
+                <ul class="muted" style="margin:0;padding-left:18px">
+                  <li><b>single</b> — проигрывает все кадры один раз и возвращает базовый визуал.</li>
+                  <li><b>repeat</b> — зацикливает кадры.</li>
+                  <li><b>lastframe</b> — проигрывает и останавливается на последнем кадре.</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><b>type</b></td>
+              <td>TEXT / BLOCK / IMAGE</td>
+              <td>
+                К чему применяется анимация:
+                <span class="tag">TEXT</span> меняет текст,
+                <span class="tag">BLOCK</span> меняет material у BlockDisplay,
+                <span class="tag">IMAGE</span> меняет imageId у ItemDisplay(PAPER).
+              </td>
+            </tr>
+            <tr>
+              <td><b>content</b></td>
+              <td>list</td>
+              <td>Список кадров: значение + длительность в тиках.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Примеры</h4>
+
+      <pre><code class="language-yaml"># animations/welcome_text.yml
+mode: repeat
+type: TEXT
+content:
+  - "&amp;aПривет": 10
+  - "&amp;eДобро пожаловать": 10
+  - "&amp;bНа сервер": 10</code></pre>
+
+      <pre><code class="language-yaml"># animations/logo_anim.yml
+mode: repeat
+type: IMAGE
+content:
+  - "logo_1": 5
+  - "logo_2": 5
+  - "logo_3": 5</code></pre>
+
+      <pre><code class="language-yaml"># animations/block_cycle.yml
+mode: repeat
+type: BLOCK
+content:
+  - "STONE": 10
+  - "GOLD_BLOCK": 10
+  - "DIAMOND_BLOCK": 10</code></pre>
+
+      <div class="warn">
+        <b>Важно:</b> type должен совпадать с типом элемента (TEXT↔TEXT, IMAGE↔IMAGE, BLOCK↔BLOCK),
+        иначе анимация не применится.
+      </div>
+    </section>
+
+    <section id="animations-bind">
+      <h3>Привязка анимации к элементу</h3>
+      <pre><code class="language-yaml">- id: logo
+  type: IMAGE
+  x: 0
+  y: 1
+  z: 0
+  image: "logo_1"
+  animation: "logo_anim"
+  animation_autostart: true</code></pre>
+
+      <div class="note">
+        <b>Если animation_autostart не указан:</b> считается <b>true</b>.
+      </div>
+    </section>
+
+    <section id="animations-control">
+      <h3>Управление анимацией</h3>
+
+      <h4>Через hover (на том же элементе)</h4>
+      <pre><code class="language-yaml">hover:
+  animation_action: pause   # pause | stop | stop_forever | start | restart</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>animation_action</th>
+              <th>Что происходит</th>
+              <th>Что на unhover</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>pause</b></td>
+              <td>Анимация “замораживается” на текущем кадре.</td>
+              <td>Продолжается с того же кадра.</td>
+            </tr>
+            <tr>
+              <td><b>stop</b></td>
+              <td>Анимация останавливается и визуал возвращается к базовому.</td>
+              <td>Запускается заново (с начала), если не остановлена навсегда.</td>
+            </tr>
+            <tr>
+              <td><b>stop_forever</b></td>
+              <td>Анимация полностью отключается.</td>
+              <td>Не восстановится сама (нужно element: ... anim restart).</td>
+            </tr>
+            <tr>
+              <td><b>start</b></td>
+              <td>Запускает анимацию если она не идёт.</td>
+              <td>Ничего особенного.</td>
+            </tr>
+            <tr>
+              <td><b>restart</b></td>
+              <td>Перезапускает анимацию с первого кадра.</td>
+              <td>Ничего особенного.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Через actions других элементов (element: id anim ...)</h4>
+      <pre><code class="language-yaml">left:
+  - "element: logo anim pause"
+  - "element: logo anim resume"
+  - "element: logo anim stop"
+  - "element: logo anim stop_forever"
+  - "element: logo anim start"
+  - "element: logo anim restart"</code></pre>
+    </section>
+
+    <section id="hover-raytrace">
+      <h3>Hover и rayTraceEntities — как это реально работает</h3>
+      <p class="muted">
+        Hover считается так:
+      </p>
+      <ul class="muted">
+        <li>Берётся позиция глаз игрока (<span class="kbd">eye</span>) и направление взгляда (<span class="kbd">dir</span>).</li>
+        <li>Вызывается <span class="kbd">world.rayTraceEntities(eye, dir, maxDistance, raySize, filter)</span>.</li>
+        <li>В filter пропускаются только те сущности, которые зарегистрированы как кликабельные (Interaction-хитбоксы).</li>
+        <li>Если луч попал в хитбокс — элемент считается наведённым.</li>
+      </ul>
+
+      <div class="note">
+        <b>Почему это важно:</b> hover не зависит от “визуала” (Display). Если hitbox маленький или смещён — hover будет “мимо”.
+      </div>
+
+      <pre><code>// пример параметров из логики плагина
+maxDistance = 6.0
+raySize     = 0.15</code></pre>
+
+      <div class="warn">
+        <b>Если хочешь, чтобы hover работал “с дальнего расстояния”:</b><br/>
+        увеличь <span class="kbd">maxDistance</span> в коде или делай меню ближе к игроку,
+        а также увеличивай размеры хитбоксов.
+      </div>
+    </section>
+
+    <section id="pitch-fix">
+      <h3>Поворот при pitch 90/-90 — почему ломалось и как исправлено</h3>
+      <p class="muted">
+        Классическая проблема: если брать направление через <span class="kbd">player.getLocation().getDirection()</span>,
+        то при pitch близком к ±90 вектор становится почти вертикальным, а после обнуления Y он превращается в (0,0,0),
+        и “направление вперёд” ломается.
+      </p>
+
+      <div class="note">
+        <b>Решение:</b> направление для anchor считается только по <b>yaw</b>, игнорируя pitch.
+        Тогда при любом pitch меню будет стабильно спавниться “вперёд по yaw”.
+      </div>
+    </section>
+
+    <section id="visibility">
+      <h3>Видимость меню — почему другие игроки не видят чужие меню</h3>
+      <p class="muted">
+        Меню “персональное”: каждый Display/Interaction скрывается от всех игроков, кроме владельца.
+      </p>
+      <ul class="muted">
+        <li>При спавне сущностей плагин делает <span class="kbd">hideEntity</span> для всех кроме viewer.</li>
+        <li>При заходе игрока в игру применяется “донастройка видимости”, чтобы новые игроки тоже не увидели чужие сущности.</li>
+      </ul>
+      <div class="note"><b>Итог:</b> каждое меню видно только своему игроку.</div>
+    </section>
+
+    <section id="troubleshooting">
+      <h3>Troubleshooting (частые проблемы)</h3>
+
+      <h4>1) Hover не срабатывает</h4>
+      <ul class="muted">
+        <li>Проверь размеры <span class="kbd">hitbox.width/height</span> (или добавь <span class="kbd">extra_hitboxes</span>).</li>
+        <li>Убедись, что хитбокс не смещён неверно (<span class="kbd">yOffset</span>).</li>
+        <li>Учти ограничение дальности луча (обычно 6 блоков).</li>
+      </ul>
+
+      <h4>2) Кликаю по визуалу, но не работает</h4>
+      <ul class="muted">
+        <li>Клики считаются по зарегистрированным сущностям (обычно Interaction + иногда визуал).</li>
+        <li>Если “мимо” — опять же hitbox.</li>
+      </ul>
+
+      <h4>3) IMAGE не отображается</h4>
+      <ul class="muted">
+        <li>Проверь, что ресурс-пак реально загружен игроку.</li>
+        <li>Проверь, что item model существует для <span class="kbd">menuholograms:&lt;imageId&gt;</span>.</li>
+        <li>imageId приводится к lower-case.</li>
+      </ul>
+
+      <h4>4) Анимация не проигрывается</h4>
+      <ul class="muted">
+        <li>Проверь совпадение <span class="kbd">type</span> анимации и типа элемента.</li>
+        <li>Проверь <span class="kbd">animation_autostart</span> (если false — запускай через actions).</li>
+      </ul>
+
+      <div class="danger">
+        <b>Если что-то “вдруг исчезает”:</b> меню удаляет все сущности при close(). Если у тебя close_time маленький — оно может закрываться само.
+      </div>
+    </section>
+
+    <section>
+      <h3>Шаблоны скриншотов (как хранить для GitHub)</h3>
+      <p class="muted">
+        Рекомендуемая структура для GitHub Pages:
+      </p>
+      <pre><code>docs/
+  index.html
+  assets/
+    screenshots/
+      screenshot1_создание_меню.png
+      screenshot2_элементы_и_позиции.png
+      screenshot3_hover_эффекты.png
+      screenshot4_extra_hitboxes.png
+      screenshot5_animations_папка.png
+      screenshot6_element_actions.png</code></pre>
+      <div class="note">
+        <b>Подписи уже есть:</b> просто положи файлы в указанную папку — картинки автоматически появятся на странице.
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>© MenuHolograms — документация для GitHub Pages. Можно копировать этот файл в <span class="kbd">docs/index.html</span>.</p>
+    </div>
+  </main>
+</div>
+</body>
+</html>
